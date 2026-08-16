@@ -119,3 +119,13 @@ export interface LoginForm {
   code?: string;
   password?: string;
 }
+
+/** 签到状态（/user/sign/count 返回） */
+export interface SignCount {
+  /** 今日是否已签到 */
+  today: boolean;
+  /** 连续签到天数：今日已签为截至今天；今日未签为截至昨天 */
+  streak: number;
+  /** 本月累计已签天数（断签不清零） */
+  monthDays: number;
+}

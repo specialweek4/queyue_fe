@@ -13,7 +13,7 @@ import { useToast } from "@/context/ToastContext";
 import { useInfiniteScroll } from "@/hooks/useInfiniteScroll";
 import { formatDate } from "@/utils/format";
 import { AddIcon, ChatIcon, EditIcon, LikeIcon, LogoutIcon, RefreshIcon, StarIcon, UserIcon } from "@/components/icons/Icon";
-import type { Blog, UserInfo } from "@/types";
+import type { Blog, SignCount, UserInfo } from "@/types";
 import styles from "./ProfilePage.module.css";
 
 type TabKey = "blogs" | "follow";
@@ -37,6 +37,12 @@ const ProfilePage = () => {
   const [feedLoading, setFeedLoading] = useState(false);
   const [feedFinished, setFeedFinished] = useState(false);
   const [loggingOut, setLoggingOut] = useState(false);
+
+  // 签到
+  const [signToday, setSignToday] = useState(false);
+  const [signStreak, setSignStreak] = useState(0);
+  const [signMonthDays, setSignMonthDays] = useState(0);
+  const [signLoading, setSignLoading] = useState(false);
 
   useEffect(() => {
     if (!authLoading && !user) {
@@ -66,11 +72,44 @@ const ProfilePage = () => {
     }
   }, [toast]);
 
+  // 签到状态（today=今日是否已签；streak=连续天数，今日未签时为截至昨天；monthDays=本月累计已签）
+  const loadSignCount = useCallback(async () => {
+    if (!user) return;
+    try {
+      const data = await userService.signCount();
+      setSignToday(data?.today ?? false);
+      setSignStreak(data?.streak ?? 0);
+      setSignMonthDays(data?.monthDays ?? 0);
+    } catch {
+      setSignToday(false);
+      setSignStreak(0);
+      setSignMonthDays(0);
+    }
+  }, [user]);
+
+  const handleSign = async () => {
+    if (signLoading || signToday) return;
+    setSignLoading(true);
+    try {
+      await userService.sign();
+      const data = await userService.signCount();
+      setSignToday(data?.today ?? true);
+      setSignStreak(data?.streak ?? 1);
+      setSignMonthDays(data?.monthDays ?? 1);
+      toast.success(`签到成功，已连续签到 ${data?.streak ?? 1} 天`);
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "签到失败");
+    } finally {
+      setSignLoading(false);
+    }
+  };
+
   useEffect(() => {
     if (!user) return;
     void loadInfo();
     void loadMyBlogs();
-  }, [user, loadInfo, loadMyBlogs]);
+    void loadSignCount();
+  }, [user, loadInfo, loadMyBlogs, loadSignCount]);
 
   // 关注动态：clear 时重置滚动分页参数（对应 hmdp 前端 queryBlogsOfFollow 逻辑）
   const loadFeed = useCallback(
@@ -168,6 +207,33 @@ const ProfilePage = () => {
               <span>{stat.label}</span>
             </div>
           ))}
+        </div>
+      </section>
+
+      <section className={styles.signCard}>
+        <div className={styles.signInfo}>
+          <div className={styles.signStat}>
+            <b className={styles.signDays}>{signStreak}</b>
+            <span className={styles.signLabel}>本月连续签到</span>
+          </div>
+          <div className={styles.signDivider} />
+          <div className={styles.signStat}>
+            <b className={styles.signDays}>{signMonthDays}</b>
+            <span className={styles.signLabel}>本月已签天数</span>
+          </div>
+        </div>
+        <div className={styles.signRight}>
+          <button
+            type="button"
+            className={signToday ? `${styles.signBtn} ${styles.signBtnDone}` : styles.signBtn}
+            onClick={() => void handleSign()}
+            disabled={signLoading || signToday}
+          >
+            {signLoading ? "签到中..." : signToday ? "今日已签到" : "签到"}
+          </button>
+          <span className={styles.signTip}>
+            {signToday ? "每日签到，积少成多" : signStreak > 0 ? "今日还未签到，别断签哦" : "每日签到，积少成多"}
+          </span>
         </div>
       </section>
 

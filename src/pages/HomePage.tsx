@@ -89,7 +89,6 @@ const HomePage = () => {
       <section>
         <div className={styles.sectionHead}>
           <h3>热门笔记</h3>
-          <span className={styles.sectionNote}>按点赞数推荐</span>
           <button type="button" className={styles.refreshBtn} onClick={() => void loadMore()} title="刷新">
             <RefreshIcon size={16} />
           </button>

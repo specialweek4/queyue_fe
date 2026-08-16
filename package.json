@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
-  "description": "趣评雀 - 本地生活点评与探店笔记分享平台（React + Vite + TypeScript）",
+  "description": "趣评雀 - 以生活分享、购物娱乐为主的社交平台前端（React + Vite + TypeScript）",
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",

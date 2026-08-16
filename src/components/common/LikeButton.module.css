@@ -1,0 +1,32 @@
+.like {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  border: none;
+  background: none;
+  padding: 4px 6px;
+  border-radius: 999px;
+  cursor: pointer;
+  color: var(--color-text-muted);
+  font-size: 12px;
+  transition: color 0.15s ease, background 0.15s ease;
+}
+
+.like:hover {
+  background: var(--color-primary-soft);
+  color: var(--color-primary-strong);
+}
+
+.like:disabled {
+  cursor: wait;
+  opacity: 0.7;
+}
+
+.liked {
+  color: var(--color-primary-strong);
+}
+
+.large {
+  font-size: 14px;
+  gap: 6px;
+}

@@ -1,0 +1,18 @@
+.avatar {
+  border-radius: 50%;
+  object-fit: cover;
+  flex: none;
+  border: 2px solid rgba(154, 97, 54, 0.18);
+}
+
+.placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  flex: none;
+  font-weight: 600;
+  color: #fff;
+  background: linear-gradient(135deg, #9a6136 0%, #7a4a26 100%);
+  user-select: none;
+}

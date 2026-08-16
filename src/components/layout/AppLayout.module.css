@@ -1,0 +1,36 @@
+.container {
+  width: 100%;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.main {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.pageCard {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 32px;
+  padding: 32px;
+  box-shadow: 0 20px 46px rgba(77, 61, 45, 0.06);
+}
+
+@media (max-width: 900px) {
+  .container {
+    gap: 16px;
+    /* 给贴底的移动端导航栏让位 */
+    padding-bottom: calc(76px + env(safe-area-inset-bottom));
+  }
+
+  .pageCard {
+    border-radius: 24px;
+    padding: 20px;
+  }
+}

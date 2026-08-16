@@ -1,0 +1,61 @@
+.viewport {
+  position: fixed;
+  top: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  pointer-events: none;
+}
+
+.toast {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  max-width: min(480px, 86vw);
+  padding: 10px 18px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.95);
+  box-shadow: 0 12px 30px rgba(77, 61, 45, 0.14);
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--color-text-strong);
+  animation: toast-in 0.24s ease both;
+}
+
+.dot {
+  flex: none;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+
+.success .dot {
+  background: var(--color-success);
+  box-shadow: 0 0 0 4px rgba(18, 192, 123, 0.16);
+}
+
+.error .dot {
+  background: var(--color-danger);
+  box-shadow: 0 0 0 4px rgba(255, 107, 107, 0.16);
+}
+
+.info .dot {
+  background: var(--color-primary);
+  box-shadow: 0 0 0 4px rgba(154, 97, 54, 0.16);
+}
+
+@keyframes toast-in {
+  from {
+    opacity: 0;
+    transform: translateY(-10px) scale(0.96);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}

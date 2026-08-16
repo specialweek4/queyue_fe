@@ -1,0 +1,149 @@
+.saveBtn {
+  padding: 9px 26px;
+  border: none;
+  border-radius: 999px;
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-strong) 100%);
+  color: #fff;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 10px 22px rgba(154, 97, 54, 0.26);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.saveBtn:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 14px 28px rgba(154, 97, 54, 0.32);
+}
+
+.saveBtn:disabled {
+  opacity: 0.7;
+  cursor: wait;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  padding: 10px 26px;
+  border-radius: 24px;
+  background: rgba(255, 255, 255, 0.92);
+  box-shadow: 0 10px 26px rgba(77, 61, 45, 0.06);
+}
+
+.avatarRow {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 18px 0;
+}
+
+.avatarBtn {
+  position: relative;
+  padding: 0;
+  border: none;
+  background: none;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.avatarMask {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: rgba(77, 61, 45, 0.4);
+  color: #fff;
+  opacity: 0;
+  transition: opacity 0.16s ease;
+}
+
+.avatarBtn:hover .avatarMask {
+  opacity: 1;
+}
+
+.hiddenInput {
+  display: none;
+}
+
+.divider {
+  height: 1px;
+  background: var(--color-divider);
+}
+
+.field {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 16px 0;
+}
+
+.label {
+  flex: none;
+  width: 84px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--color-text-strong);
+}
+
+.input,
+.textarea {
+  flex: 1;
+  min-width: 0;
+  padding: 11px 14px;
+  border: 1px solid rgba(154, 97, 54, 0.24);
+  border-radius: 12px;
+  outline: none;
+  font-size: 14px;
+  color: var(--color-text-strong);
+  background: #fff;
+  transition: border-color 0.16s ease, box-shadow 0.16s ease;
+}
+
+.input:focus,
+.textarea:focus {
+  border-color: rgba(154, 97, 54, 0.6);
+  box-shadow: 0 0 0 3px rgba(154, 97, 54, 0.12);
+}
+
+.textarea {
+  resize: vertical;
+  line-height: 1.7;
+}
+
+.radioRow {
+  display: flex;
+  gap: 10px;
+}
+
+.radio {
+  padding: 8px 22px;
+  border: 1px solid rgba(154, 97, 54, 0.26);
+  border-radius: 999px;
+  background: #fff;
+  color: var(--color-text-muted);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+}
+
+.radioOn {
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-strong) 100%);
+  border-color: transparent;
+  color: #fff;
+  font-weight: 600;
+}
+
+@media (max-width: 900px) {
+  .field {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+  }
+
+  .label {
+    width: auto;
+  }
+}

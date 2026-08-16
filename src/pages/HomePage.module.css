@@ -1,0 +1,230 @@
+.topBar {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  padding: 6px 0;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border: none;
+  background: none;
+  cursor: pointer;
+  padding: 0;
+  text-align: left;
+}
+
+.brandLogo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 16px;
+  background: linear-gradient(135deg, #9a6136 0%, #7a4a26 100%);
+  color: #fff;
+  box-shadow: 0 10px 24px rgba(154, 97, 54, 0.26);
+}
+
+.brandText {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.brandText b {
+  font-size: 18px;
+  color: var(--color-text-strong);
+}
+
+.brandText i {
+  font-style: normal;
+  font-size: 11px;
+  color: var(--color-text-muted);
+}
+
+.search {
+  flex: 1;
+  max-width: 520px;
+}
+
+.userBadge {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-left: auto;
+  padding: 5px 14px 5px 5px;
+  border: none;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.85);
+  cursor: pointer;
+  box-shadow: 0 8px 20px rgba(77, 61, 45, 0.07);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.userBadge:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 10px 24px rgba(154, 97, 54, 0.16);
+}
+
+.userName {
+  max-width: 110px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-text-strong);
+}
+
+.sectionHead {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.sectionHead h3 {
+  font-size: 17px;
+}
+
+.sectionNote {
+  font-size: 12px;
+  color: var(--color-text-muted);
+}
+
+.refreshBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  margin-left: auto;
+  border: none;
+  border-radius: 10px;
+  background: var(--color-primary-soft);
+  color: var(--color-primary-strong);
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.refreshBtn:hover {
+  transform: rotate(90deg);
+}
+
+.waterfall {
+  columns: 3 240px;
+  column-gap: 18px;
+}
+
+.card {
+  break-inside: avoid;
+  margin-bottom: 18px;
+  border-radius: 20px;
+  background: #fff;
+  overflow: hidden;
+  box-shadow: 0 10px 26px rgba(77, 61, 45, 0.07);
+  transition: transform 0.18s ease, box-shadow 0.18s ease;
+}
+
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 16px 34px rgba(154, 97, 54, 0.14);
+}
+
+.cardImg {
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: none;
+  background: none;
+  cursor: pointer;
+}
+
+.cardImg > * {
+  aspect-ratio: 4 / 3;
+}
+
+.cardBody {
+  padding: 12px 14px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.cardTitle {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--color-text-strong);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.cardFoot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.author {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+  padding: 0;
+  border: none;
+  background: none;
+  cursor: pointer;
+}
+
+.author span {
+  max-width: 110px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 12px;
+  color: var(--color-text-muted);
+}
+
+.loadingRow {
+  display: flex;
+  justify-content: center;
+  padding: 10px 0 2px;
+  min-height: 30px;
+}
+
+.loading,
+.finished {
+  font-size: 12px;
+  color: var(--color-text-muted);
+}
+
+@media (max-width: 900px) {
+  .topBar {
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .brandText i {
+    display: none;
+  }
+
+  .search {
+    order: 3;
+    flex-basis: 100%;
+    max-width: none;
+  }
+
+  .userBadge {
+    margin-left: auto;
+  }
+
+  .heroStamps {
+    display: none;
+  }
+}

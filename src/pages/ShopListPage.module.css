@@ -1,0 +1,291 @@
+.hero {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 26px 30px;
+  border-radius: 24px;
+  background: linear-gradient(120deg, rgba(154, 97, 54, 0.1) 0%, rgba(251, 191, 36, 0.08) 55%, rgba(251, 191, 36, 0.12) 100%);
+  border: 1px solid rgba(154, 97, 54, 0.14);
+}
+
+.heroTitle {
+  font-size: 22px;
+}
+
+.heroSub {
+  margin-top: 6px;
+  font-size: 13px;
+  color: var(--color-text-muted);
+}
+
+.heroStamps {
+  display: flex;
+  gap: 10px;
+}
+
+.heroStamps span {
+  padding: 8px 16px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 700;
+  color: #fff;
+  box-shadow: 0 8px 18px rgba(77, 61, 45, 0.1);
+}
+
+.stampCyan {
+  background: linear-gradient(135deg, #9a6136, #7a4a26);
+}
+
+.stampGreen {
+  background: linear-gradient(135deg, #ffd34d, #fbbf24);
+  color: #4d3a00;
+  box-shadow: 0 8px 18px rgba(251, 191, 36, 0.24);
+}
+
+.stampSky {
+  background: linear-gradient(135deg, #fde68a, #ffd34d);
+  color: #4d3a00;
+  box-shadow: 0 8px 18px rgba(251, 191, 36, 0.24);
+}
+
+.typeSection {
+  padding: 18px;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.9);
+  box-shadow: 0 10px 26px rgba(77, 61, 45, 0.06);
+}
+
+.typeGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(86px, 1fr));
+  gap: 14px;
+}
+
+.typeBox {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 8px;
+  border: 2px solid transparent;
+  border-radius: 18px;
+  background: var(--color-surface-soft);
+  cursor: pointer;
+  transition: transform 0.18s ease, box-shadow 0.18s ease, background 0.18s ease, border-color 0.18s ease;
+}
+
+.typeBox:hover {
+  transform: translateY(-2px);
+  background: #fff;
+  box-shadow: 0 12px 26px rgba(154, 97, 54, 0.14);
+}
+
+.typeActive {
+  border-color: var(--color-yellow);
+  background: var(--color-yellow-soft);
+}
+
+.typeView {
+  width: 58px;
+  height: 58px;
+  border-radius: 18px;
+  overflow: hidden;
+}
+
+.typeView > * {
+  width: 100%;
+  height: 100%;
+}
+
+.typeAllIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-primary-soft);
+  color: var(--color-primary-strong);
+}
+
+.typeText {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+@media (max-width: 900px) {
+  .heroStamps {
+    display: none;
+  }
+}
+
+.sortBar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 16px;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.9);
+  box-shadow: 0 10px 26px rgba(77, 61, 45, 0.06);
+}
+
+.sortItem {
+  padding: 7px 18px;
+  border: none;
+  border-radius: 999px;
+  background: var(--color-surface-soft);
+  color: var(--color-text-muted);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.16s ease, color 0.16s ease;
+}
+
+.sortItem:hover {
+  color: var(--color-primary-strong);
+}
+
+.sortActive {
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-strong) 100%);
+  color: #fff;
+  font-weight: 600;
+  box-shadow: 0 8px 18px rgba(154, 97, 54, 0.24);
+}
+
+.sortActive:hover {
+  color: #fff;
+}
+
+.sortHint {
+  margin-left: auto;
+  font-size: 12px;
+  color: var(--color-text-muted);
+}
+
+/* 瀑布流店铺卡片（网格布局：列数自适应、卡片铺满不留空列） */
+.waterfall {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 14px;
+}
+
+.card {
+  border-radius: 16px;
+  background: #fff;
+  overflow: hidden;
+  box-shadow: 0 8px 20px rgba(77, 61, 45, 0.07);
+  cursor: pointer;
+  transition: transform 0.18s ease, box-shadow 0.18s ease;
+}
+
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 14px 30px rgba(154, 97, 54, 0.14);
+}
+
+.cardImg {
+  display: block;
+  width: 100%;
+}
+
+.cardImg > * {
+  aspect-ratio: 4 / 3;
+}
+
+.cardBody {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 10px 12px 12px;
+}
+
+.cardTitle {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--color-text-strong);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.rateRow {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.comments {
+  font-size: 11px;
+  color: var(--color-text-muted);
+}
+
+.chips {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.area {
+  padding: 1px 7px;
+  border-radius: 6px;
+  background: var(--color-primary-soft);
+  color: var(--color-primary-strong);
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.distance {
+  padding: 1px 7px;
+  border-radius: 6px;
+  background: var(--color-yellow-soft);
+  color: var(--color-yellow-strong);
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.avg {
+  color: var(--color-price);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.addressRow {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11px;
+  color: var(--color-text-muted);
+  overflow: hidden;
+}
+
+.addressRow span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.cardFoot {
+  display: flex;
+  align-items: center;
+  margin-top: 2px;
+}
+
+.loadingRow {
+  display: flex;
+  justify-content: center;
+  padding: 10px 0 2px;
+  min-height: 30px;
+}
+
+.loading,
+.finished {
+  font-size: 12px;
+  color: var(--color-text-muted);
+}
+
+@media (max-width: 900px) {
+  .waterfall {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+}

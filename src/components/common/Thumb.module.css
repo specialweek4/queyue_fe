@@ -1,0 +1,25 @@
+.thumb {
+  width: 100%;
+  object-fit: cover;
+  background: var(--color-surface-soft);
+}
+
+.fallback {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  color: rgba(77, 61, 45, 0.4);
+}
+
+.fallback.blog {
+  background: linear-gradient(135deg, var(--color-primary-soft), var(--color-yellow-soft));
+}
+
+.fallback.shop {
+  background: linear-gradient(135deg, var(--color-yellow-soft), var(--color-primary-soft));
+}
+
+.fallback.user {
+  background: linear-gradient(135deg, var(--color-yellow-soft), var(--color-surface-soft));
+}

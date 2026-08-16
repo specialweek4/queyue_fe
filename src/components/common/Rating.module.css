@@ -1,0 +1,35 @@
+.rating {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.stars {
+  position: relative;
+  display: inline-block;
+  line-height: 1;
+}
+
+.starsBack,
+.starsFront {
+  display: inline-flex;
+  gap: 1px;
+  white-space: nowrap;
+}
+
+.starsBack {
+  color: rgba(77, 61, 45, 0.14);
+}
+
+.starsFront {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  color: var(--color-yellow);
+}
+
+.score {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--color-yellow-strong);
+}

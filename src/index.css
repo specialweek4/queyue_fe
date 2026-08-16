@@ -1,0 +1,173 @@
+:root {
+  color-scheme: only light;
+  font-family: "PingFang SC", "HarmonyOS", "SF Pro Display", "Helvetica Neue", "Microsoft YaHei", Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+  /* 焦糖（奶咖棕，主色） */
+  --color-primary: #9a6136;
+  --color-primary-strong: #7a4a26;
+  --color-primary-light: #c99a6b;
+  /* 蜜金（暖金色，用于高亮、星级、价格） */
+  --color-yellow: #fbbf24;
+  --color-yellow-strong: #b45309;
+  --color-price: #d97706;
+  --color-success: #12c07b;
+  --color-warning: #ffb13d;
+  --color-danger: #ff6b6b;
+  --color-text-strong: #33261a;
+  --color-text: #4d3d2d;
+  --color-text-muted: #8b7a66;
+  --color-border: rgba(154, 97, 54, 0.25);
+  --color-divider: rgba(77, 61, 45, 0.08);
+  --color-bg: #fbf6ee;
+  --color-surface: #ffffff;
+  --color-surface-soft: #faf5ec;
+  --color-primary-soft: #f5ead9;
+  --color-yellow-soft: #fdf0cd;
+  --radius-xs: 8px;
+  --radius-sm: 12px;
+  --radius-md: 16px;
+  --radius-lg: 28px;
+  --shadow-soft: 0 12px 32px rgba(154, 97, 54, 0.16);
+  --shadow-card: 0 16px 40px rgba(77, 61, 45, 0.08);
+  --shadow-yellow: 0 12px 28px rgba(251, 191, 36, 0.22);
+  --sidebar-width: 96px;
+  background: var(--color-bg);
+  color: var(--color-text);
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  margin: 0;
+  width: 100%;
+  min-height: 100%;
+  background: radial-gradient(circle at 12% 0%, rgba(154, 97, 54, 0.12), transparent 42%),
+    radial-gradient(circle at 88% 18%, rgba(251, 191, 36, 0.1), transparent 44%),
+    radial-gradient(circle at 50% 100%, rgba(251, 191, 36, 0.06), transparent 50%),
+    linear-gradient(165deg, #f7efe3 0%, #fffdf6 45%, #fdf4e0 100%);
+}
+
+html {
+  /* 页面高度变化导致滚动条出现/消失时，预留固定槽位，避免布局横向抖动 */
+  scrollbar-gutter: stable;
+}
+
+body {
+  margin: 0;
+  display: flex;
+  justify-content: center;
+  background-attachment: fixed;
+}
+
+#root {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  margin: 0;
+  font-weight: 600;
+  color: var(--color-text-strong);
+}
+
+p {
+  margin: 0;
+}
+
+button,
+input,
+textarea,
+select {
+  font: inherit;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+img {
+  display: block;
+  max-width: 100%;
+}
+
+.app-shell {
+  width: min(1400px, 100%);
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: var(--sidebar-width) 1fr;
+  gap: 24px;
+  padding: 24px 32px 32px;
+}
+
+.ghost-button {
+  padding: 10px 18px;
+  border-radius: 999px;
+  border: 1px solid rgba(154, 97, 54, 0.32);
+  background: rgba(255, 255, 255, 0.76);
+  color: var(--color-primary-strong);
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.ghost-button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 12px 24px rgba(154, 97, 54, 0.18);
+}
+
+/* 自定义滚动条，配合焦糖主题 */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(154, 97, 54, 0.28);
+  border-radius: 999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(154, 97, 54, 0.45);
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+@media (max-width: 1200px) {
+  :root {
+    --sidebar-width: 88px;
+  }
+
+  .app-shell {
+    padding: 16px 20px 24px;
+  }
+}
+
+@media (max-width: 1024px) {
+  .app-shell {
+    grid-template-columns: 72px 1fr;
+  }
+}
+
+@media (max-width: 900px) {
+  .app-shell {
+    grid-template-columns: 1fr;
+    padding: 12px;
+  }
+}

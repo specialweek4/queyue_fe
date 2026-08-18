@@ -1,8 +1,8 @@
-# 趣评雀（qupingque_fe）
+# 雀跃（queyue_fe）
 
-趣评雀是一个以**生活分享、购物娱乐为主**的社交平台前端：用户可以浏览热门笔记、探店种草、
+雀跃是一个以**生活分享、购物娱乐为主**的社交平台：用户可以浏览热门笔记、探店种草、
 参与店铺优惠/秒杀，发布图文笔记与他人互动。项目基于 React 18 + Vite 5 + TypeScript 构建，
-接口调用约定与趣评雀后端（Spring Boot）一一对应，主题色为「焦糖 + 奶油白 + 蜜金」。
+接口调用约定与雀跃后端（Spring Boot）一一对应，主题色为「焦糖 + 奶油白 + 蜜金」。
 
 ## 技术栈
 
@@ -25,8 +25,8 @@ npm run preview    # 本地预览构建产物
 
 ## 接口调用约定
 
-- 基地址 `/api`，开发环境由 Vite 代理到 `http://localhost:8081`（趣评雀后端），
-  生产环境由 nginx 将 `/api` 转发到 `8081`（见 `nginx-1.18.0/html/qupingque/qupingque-nginx.conf.example`）；
+- 基地址 `/api`，开发环境由 Vite 代理到 `http://localhost:8081`（雀跃后端），
+  生产环境由 nginx 将 `/api` 转发到 `8081`；
 - token 保存于 `sessionStorage("token")`，请求头 `authorization` 携带；
 - 后端统一返回 `Result{success, errorMsg, data, total}`：
   `success=false` 时以 `errorMsg` 提示，`success=true` 时直接使用 `data`；
@@ -45,14 +45,14 @@ npm run preview    # 本地预览构建产物
 | `/login` | 验证码登录 + 密码登录（60s 倒计时、协议勾选） |
 | `/shops` | 发现附近好店横幅、店铺分类宫格、距离/人气/评分排序、无限滚动 |
 | `/shop/:id` | 店铺信息、图片、营业时间、代金券/秒杀抢购、示例评价 |
-| `/blog/:id` | 图片轮播、作者信息与关注、点赞列表、关联店铺卡片、评论占位 |
-| `/blog/new` | 多图上传/删除、标题正文、搜索并关联店铺、发布笔记 |
+| `/blog/:id` | 图片轮播、作者信息与关注、点赞列表、正文自 OSS 加载、评论占位 |
+| `/blog/new` | 封面/多图 OSS 直传、标题正文、保存草稿（可续写）、发布笔记 |
 | `/messages` | 消息中心（后端暂无消息接口，占位页） |
 | `/profile` | 我的信息、粉丝/关注/积分、我的笔记、关注动态滚动分页、退出登录 |
 | `/profile/edit` | 头像上传、昵称、介绍、性别、城市、生日 |
 | `/user/:id` | 他人主页、关注/取消关注、TA 的笔记、共同关注 |
 
-## 后端接口清单（qupingque_be）
+## 后端接口清单（queyue-be）
 
 已实现并直接对接：
 
@@ -74,7 +74,7 @@ npm run preview    # 本地预览构建产物
 ```
 src/
 ├── components/
-│   ├── icons/         # 内联 SVG 图标（含趣评雀品牌图标）
+│   ├── icons/         # 内联 SVG 图标（含雀跃品牌图标）
 │   ├── layout/        # Sidebar / AppLayout / PageHeader
 │   └── common/        # Avatar / Thumb / Rating / LikeButton / FollowButton / SearchBar / EmptyState
 ├── context/           # AuthContext（token+登录态）/ ToastContext（全局提示）

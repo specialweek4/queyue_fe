@@ -3,8 +3,9 @@ import type { UserDTO } from "@/types";
 
 /** 关注相关接口（对应 hmdp 前端约定，后端 FollowController 待实现） */
 export const followService = {
-  /** 当前用户是否关注了目标用户 */
-  orNot: (userId: number) => apiFetch<boolean>(`/follow/or/not/${userId}`),
+  /** 当前用户是否关注了目标用户（静默探测：401 降级为未关注，不跳登录） */
+  orNot: (userId: number) =>
+    apiFetch<boolean>(`/follow/or/not/${userId}`, { skipAuthRedirect: true }),
 
   /** 关注/取消关注（isFollow=true 关注，false 取消） */
   follow: (userId: number, isFollow: boolean) =>

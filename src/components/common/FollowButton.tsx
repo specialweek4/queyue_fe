@@ -6,22 +6,28 @@ import styles from "./FollowButton.module.css";
 
 type FollowButtonProps = {
   userId: number;
-  /** 外部可选初值（后端返回后以查询结果为准） */
+  /** 外部传入的初值（如详情接口返回的 followed）；传入后不再调 /follow/or/not 探测 */
+  initial?: boolean;
   className?: string;
 };
 
 /**
- * 关注按钮（对应 hmdp 前端 follow 逻辑：
- * GET /follow/or/not/{id} 查询状态，PUT /follow/{id}/{isFollow} 切换）
+ * 关注按钮：有 initial 初值时直接使用（详情接口已返回关注状态），
+ * 否则调 GET /follow/or/not/{id} 探测；切换时 PUT /follow/{id}/{isFollow}
  */
-const FollowButton = ({ userId, className = "" }: FollowButtonProps) => {
+const FollowButton = ({ userId, initial, className = "" }: FollowButtonProps) => {
   const toast = useToast();
   const { user, loading } = useAuth();
-  const [followed, setFollowed] = useState(false);
-  const [checking, setChecking] = useState(true);
+  const [followed, setFollowed] = useState(!!initial);
+  const [checking, setChecking] = useState(initial === undefined);
   const [pending, setPending] = useState(false);
 
+  // 无初值才探测（游客静默降级为未关注）
   useEffect(() => {
+    if (initial !== undefined) {
+      setFollowed(!!initial);
+      return;
+    }
     let cancelled = false;
     setChecking(true);
     followService
@@ -38,7 +44,7 @@ const FollowButton = ({ userId, className = "" }: FollowButtonProps) => {
     return () => {
       cancelled = true;
     };
-  }, [userId]);
+  }, [userId, initial]);
 
   const handleClick = async () => {
     if (loading || !user) {

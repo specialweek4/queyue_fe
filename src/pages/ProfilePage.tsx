@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import AppLayout from "@/components/layout/AppLayout";
 import PageHeader from "@/components/layout/PageHeader";
@@ -12,7 +12,7 @@ import { useAuth } from "@/context/AuthContext";
 import { useToast } from "@/context/ToastContext";
 import { useInfiniteScroll } from "@/hooks/useInfiniteScroll";
 import { formatDate } from "@/utils/format";
-import { AddIcon, ChatIcon, EditIcon, LikeIcon, LogoutIcon, RefreshIcon, StarIcon, UserIcon } from "@/components/icons/Icon";
+import { AddIcon, ChatIcon, CloseIcon, EditIcon, LikeIcon, LogoutIcon, RefreshIcon, StarIcon, UserIcon } from "@/components/icons/Icon";
 import type { Blog, SignCount, UserInfo } from "@/types";
 import styles from "./ProfilePage.module.css";
 
@@ -29,6 +29,7 @@ const ProfilePage = () => {
   // 我的笔记
   const [blogs, setBlogs] = useState<Blog[]>([]);
   const [blogsLoading, setBlogsLoading] = useState(false);
+  const [deletingId, setDeletingId] = useState<number | null>(null);
 
   // 关注动态（滚动分页）
   const [feed, setFeed] = useState<Blog[]>([]);
@@ -64,13 +65,31 @@ const ProfilePage = () => {
     setBlogsLoading(true);
     try {
       const data = await blogService.ofMe(1);
-      setBlogs(data ?? []);
+      // 后端 /blog/of/me 不过滤状态，回收站里的（status=2）在前端过滤掉
+      setBlogs((data ?? []).filter(b => b.status !== 2));
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "加载笔记失败");
     } finally {
       setBlogsLoading(false);
     }
   }, [toast]);
+
+  /** 删除笔记：调后端软删除接口（进回收站，7天内可恢复） */
+  const handleDeleteBlog = async (blog: Blog) => {
+    if (deletingId !== null) return;
+    const label = blog.status === 0 ? "草稿" : "笔记";
+    if (!window.confirm(`确定删除这篇${label}吗？删除后进入回收站，7天内可恢复`)) return;
+    setDeletingId(blog.id);
+    try {
+      await blogService.remove(blog.id);
+      setBlogs(prev => prev.filter(b => b.id !== blog.id));
+      toast.success("已移入回收站");
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "删除失败");
+    } finally {
+      setDeletingId(null);
+    }
+  };
 
   // 签到状态（today=今日是否已签；streak=连续天数，今日未签时为截至昨天；monthDays=本月累计已签）
   const loadSignCount = useCallback(async () => {
@@ -112,10 +131,14 @@ const ProfilePage = () => {
   }, [user, loadInfo, loadMyBlogs, loadSignCount]);
 
   // 关注动态：clear 时重置滚动分页参数（对应 hmdp 前端 queryBlogsOfFollow 逻辑）
+  const feedLoadingRef = useRef(false);
+
   const loadFeed = useCallback(
     async (clear = false) => {
       if (!user) return;
-      if (feedLoading) return;
+      // ref 同步防重：避免同一帧内多次滚动事件重复发请求
+      if (feedLoadingRef.current) return;
+      feedLoadingRef.current = true;
       setFeedLoading(true);
       try {
         const offset = clear ? 0 : feedOffset;
@@ -131,13 +154,16 @@ const ProfilePage = () => {
           setFeedFinished(false);
         }
       } catch (err) {
+        // 加载失败也要停止触底重试，否则短页面会随滚动事件反复请求
+        setFeedFinished(true);
         toast.error(err instanceof Error ? err.message : "加载关注动态失败");
       } finally {
+        feedLoadingRef.current = false;
         setFeedLoading(false);
       }
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [user, feedOffset, feedLastId, feedLoading, toast]
+    [user, feedOffset, feedLastId, toast]
   );
 
   useEffect(() => {
@@ -283,19 +309,38 @@ const ProfilePage = () => {
           ) : (
             <div className={styles.blogList}>
               {blogs.map(blog => (
-                <button key={blog.id} type="button" className={styles.blogRow} onClick={() => navigate(`/blog/${blog.id}`)}>
-                  <div className={styles.blogThumb}>
-                    <Thumb src={(blog.images || "").split(",")[0]} alt={blog.title} kind="blog" />
-                  </div>
-                  <div className={styles.blogBody}>
-                    <b className={styles.blogTitle}>{blog.title}</b>
-                    <span className={styles.blogMeta}>
-                      <LikeIcon size={12} /> {blog.liked}
-                      <ChatIcon size={12} /> {blog.comments}
-                      <i>{formatDate(blog.createTime)}</i>
-                    </span>
-                  </div>
-                </button>
+                <div key={blog.id} className={styles.blogRow}>
+                  <button
+                    type="button"
+                    className={styles.blogMain}
+                    onClick={() => navigate(blog.status === 0 ? `/blog/new?id=${blog.id}` : `/blog/${blog.id}`)}
+                  >
+                    <div className={styles.blogThumb}>
+                      <Thumb src={blog.coverUrl || (blog.images || "").split(",")[0]} alt={blog.title} kind="blog" />
+                    </div>
+                    <div className={styles.blogBody}>
+                      <span className={styles.blogTitleRow}>
+                        <b className={styles.blogTitle}>{blog.title}</b>
+                        {blog.status === 0 ? <span className={styles.draftBadge}>草稿</span> : null}
+                      </span>
+                      <span className={styles.blogMeta}>
+                        <LikeIcon size={12} /> {blog.liked}
+                        <ChatIcon size={12} /> {blog.comments}
+                        <i>{formatDate(blog.createTime)}</i>
+                      </span>
+                    </div>
+                  </button>
+                  <button
+                    type="button"
+                    className={styles.blogDelete}
+                    onClick={() => void handleDeleteBlog(blog)}
+                    disabled={deletingId !== null}
+                    aria-label="删除笔记"
+                    title="删除（移入回收站）"
+                  >
+                    {deletingId === blog.id ? "删除中..." : <CloseIcon size={14} />}
+                  </button>
+                </div>
               ))}
             </div>
           )

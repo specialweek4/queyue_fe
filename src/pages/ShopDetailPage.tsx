@@ -216,7 +216,7 @@ const ShopDetailPage = () => {
             </div>
           </section>
 
-          <footer className={styles.copyright}>copyright ©2026 qupingque.com · 趣评雀</footer>
+          <footer className={styles.copyright}>copyright ©2026 qupingque.com · 雀跃</footer>
         </>
       )}
     </AppLayout>

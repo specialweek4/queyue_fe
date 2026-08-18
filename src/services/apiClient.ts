@@ -1,7 +1,7 @@
 import type { Result } from "@/types";
 
 /**
- * 趣评雀 API 客户端
+ * 雀跃 API 客户端
  *
  * 沿用 hmdp 前端（nginx/html/hmdp/js/common.js）的调用约定：
  * - 基地址 /api（生产环境经 nginx 转发到 8081，开发环境由 Vite 代理）

@@ -22,7 +22,7 @@ const Svg = ({ size = 20, fill = "currentColor", children, ...rest }: SvgProps) 
   </svg>
 );
 
-/** 趣评雀品牌图标：枝头小雀（线条风格，随 currentColor） */
+/** 雀跃品牌图标：枝头小雀（线条风格，随 currentColor） */
 export const BirdIcon = (props: IconProps) => (
   <svg
     width={props.size ?? 20}

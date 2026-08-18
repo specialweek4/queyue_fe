@@ -72,7 +72,7 @@ const HomePage = () => {
           <BirdIcon size={26} />
         </span>
         <span className={styles.brandText}>
-          <b>趣评雀</b>
+          <b>雀跃</b>
           <i>沉寂已久的心情，掀起了雀跃</i>
         </span>
       </button>
@@ -104,12 +104,13 @@ const HomePage = () => {
                   className={styles.cardImg}
                   onClick={() => navigate(`/blog/${blog.id}`)}
                 >
-                  <Thumb src={blog.images.split(",")[0]} alt={blog.title} kind="blog" />
+                  <Thumb src={blog.coverUrl || blog.images.split(",")[0]} alt={blog.title} kind="blog" />
                 </button>
                 <div className={styles.cardBody}>
                   <div className={styles.cardTitle} title={blog.title}>
                     {blog.title}
                   </div>
+                  {blog.description ? <div className={styles.cardDesc}>{blog.description}</div> : null}
                   <div className={styles.cardFoot}>
                     <button
                       type="button"

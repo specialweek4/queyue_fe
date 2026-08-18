@@ -148,7 +148,7 @@ const UserPage = () => {
               {blogs.map(blog => (
                 <article key={blog.id} className={styles.blogCard} onClick={() => navigate(`/blog/${blog.id}`)}>
                   <div className={styles.blogImg}>
-                    <Thumb src={(blog.images || "").split(",")[0]} alt={blog.title} kind="blog" />
+                    <Thumb src={blog.coverUrl || (blog.images || "").split(",")[0]} alt={blog.title} kind="blog" />
                   </div>
                   <div className={styles.blogBody}>
                     <b>{blog.title}</b>

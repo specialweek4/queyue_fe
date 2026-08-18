@@ -208,19 +208,59 @@
 
 .blogRow {
   display: flex;
-  gap: 14px;
+  gap: 6px;
   padding: 12px;
   border: 1px solid rgba(154, 97, 54, 0.12);
   border-radius: 16px;
   background: var(--color-surface-soft);
-  cursor: pointer;
-  text-align: left;
   transition: border-color 0.15s ease, box-shadow 0.15s ease;
 }
 
 .blogRow:hover {
   border-color: rgba(154, 97, 54, 0.4);
   box-shadow: 0 8px 20px rgba(154, 97, 54, 0.1);
+}
+
+.blogMain {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  border: none;
+  background: none;
+  padding: 0;
+  margin: 0;
+  text-align: left;
+  color: inherit;
+  cursor: pointer;
+}
+
+.blogDelete {
+  flex: none;
+  align-self: center;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  border-radius: 50%;
+  background: none;
+  color: var(--color-text-muted);
+  font-size: 11px;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.blogDelete:hover:not(:disabled) {
+  background: rgba(213, 80, 80, 0.12);
+  color: #d55050;
+}
+
+.blogDelete:disabled {
+  opacity: 0.55;
+  cursor: default;
 }
 
 .blogThumb {
@@ -243,6 +283,13 @@
   gap: 8px;
 }
 
+.blogTitleRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
 .blogTitle {
   font-size: 14px;
   color: var(--color-text-strong);
@@ -250,6 +297,16 @@
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
+}
+
+.draftBadge {
+  flex: none;
+  padding: 1px 8px;
+  border-radius: 999px;
+  background: var(--color-yellow-soft);
+  color: var(--color-yellow-strong);
+  font-size: 11px;
+  font-weight: 700;
 }
 
 .blogMeta {

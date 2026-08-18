@@ -12,7 +12,7 @@ const navItems = [
 
 const Sidebar = () => (
   <aside className={styles.sidebar}>
-    <NavLink to="/" className={styles.logo} aria-label="趣评雀首页">
+    <NavLink to="/" className={styles.logo} aria-label="雀跃首页">
       <BirdIcon size={30} stroke="none" fill="#fff" />
     </NavLink>
     <nav className={styles.nav}>
@@ -30,7 +30,7 @@ const Sidebar = () => (
     </nav>
     <div className={styles.divider} />
     <div className={styles.footer}>
-      <span>趣评雀</span>
+      <span>雀跃</span>
       <div>沉寂已久的心情，掀起了雀跃</div>
     </div>
   </aside>

@@ -97,7 +97,7 @@ const LoginPage = () => {
           <div className={styles.logo}>
             <BirdIcon size={34} />
           </div>
-          <h1 className={styles.name}>趣评雀</h1>
+          <h1 className={styles.name}>雀跃</h1>
           <p className={styles.slogan}>沉寂已久的心情，掀起了雀跃</p>
         </div>
 
@@ -188,7 +188,7 @@ const LoginPage = () => {
               {agreed ? <CheckIcon size={13} /> : null}
             </button>
             <span className={styles.agreement}>
-              我已阅读并同意《趣评雀用户服务协议》、《隐私政策》等
+              我已阅读并同意《雀跃用户服务协议》、《隐私政策》等
             </span>
           </div>
 

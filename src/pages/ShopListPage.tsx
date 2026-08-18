@@ -158,7 +158,7 @@ const ShopListPage = () => {
       <section className={styles.hero}>
         <div>
           <h2 className={styles.heroTitle}>发现附近好店</h2>
-          <p className={styles.heroSub}>探店笔记、优惠券、真实评价，尽在趣评雀</p>
+          <p className={styles.heroSub}>探店笔记、优惠券、真实评价，尽在雀跃</p>
         </div>
         <div className={styles.heroStamps}>
           <span className={styles.stampCyan}>点评</span>

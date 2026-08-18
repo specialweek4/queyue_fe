@@ -64,7 +64,7 @@ function serveLocalImgs(): Plugin {
 }
 
 // 开发服务器：
-// - /api            转发到趣评雀后端（默认 8081），去掉 /api 前缀（与 nginx 约定一致）
+// - /api            转发到雀跃后端（默认 8081），去掉 /api 前缀（与 nginx 约定一致）
 // - /imgs           优先由本地目录直接提供（见上方插件），未命中再转发 nginx(8090)
 // - /imgproxy/qcloud 转发外部图片（商户图存于 qcloud.dpfile.com，浏览器直连易被拦截）
 export default defineConfig({

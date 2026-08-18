@@ -1,5 +1,5 @@
 /**
- * 趣评雀主题色板
+ * 雀跃主题色板
  * 主色：焦糖（caramel brown），辅色：奶油白（cream）与蜜金（honey amber）
  */
 export const colors = {

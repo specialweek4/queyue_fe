@@ -41,18 +41,30 @@ export interface Shop {
 /** 探店笔记 */
 export interface Blog {
   id: number;
-  shopId?: number;
   userId: number;
   /** 作者昵称（/blog/hot、/blog/{id} 返回） */
   icon?: string;
   name?: string;
-  /** 当前登录用户是否点赞 */
+  /** 当前登录用户是否点赞（未登录时后端不返回） */
   isLike?: boolean;
+  /** 当前登录用户是否已关注作者（未登录时后端不返回） */
+  followed?: boolean;
   title: string;
+  /** 摘要/简述（热门笔记卡片展示） */
+  description?: string;
+  /** 图片 URL 列表，逗号分隔 */
   images: string;
-  content: string;
+  /** 封面 URL（OSS） */
+  coverUrl?: string;
+  /** 正文 OSS 对象键 */
+  contentObjectKey?: string;
+  /** 详情接口返回：正文访问 URL，前端 fetch 获取文本 */
+  contentUrl?: string;
   liked: number;
   comments: number;
+  /** 0=草稿 1=已发布 */
+  status?: number;
+  publishTime?: string;
   createTime: string;
   updateTime: string;
 }

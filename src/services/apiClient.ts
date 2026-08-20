@@ -1,17 +1,4 @@
-import type { Result } from "@/types";
-
-/**
- * 雀跃 API 客户端
- *
- * 沿用 hmdp 前端（nginx/html/hmdp/js/common.js）的调用约定：
- * - 基地址 /api（生产环境经 nginx 转发到 8081，开发环境由 Vite 代理）
- * - token 保存在 sessionStorage("token")，以 authorization 请求头携带
- * - 后端统一返回 Result{success, errorMsg, data, total}：
- *   success=false 时以 errorMsg 作为错误信息 reject；
- *   success=true 时直接 resolve data 字段
- * - 401 视为未登录：清除 token 并跳转登录页
- * - 查询参数序列化时跳过空值（hmdp 的 paramsSerializer 约定）
- */
+import type { Result, TokenPair } from "@/types";
 
 const getBaseUrl = () => {
   const envBase = import.meta.env.VITE_API_BASE_URL as string | undefined;
@@ -29,24 +16,73 @@ export class ApiError extends Error {
 
 export type ApiFetchOptions = {
   method?: string;
-  /** 查询参数，序列化时跳过空值 */
   params?: Record<string, string | number | boolean | null | undefined>;
   headers?: Record<string, string>;
   body?: unknown;
   signal?: AbortSignal;
-  /** 401 时是否跳过“跳转登录页”处理（用于静默探测登录态） */
   skipAuthRedirect?: boolean;
 };
 
+const ACCESS_KEY = "accessToken";
+const REFRESH_KEY = "refreshToken";
+
+export const tokenStorage = {
+  save(pair: TokenPair) {
+    sessionStorage.setItem(ACCESS_KEY, pair.accessToken);
+    sessionStorage.setItem(REFRESH_KEY, pair.refreshToken);
+  },
+  accessToken: () => sessionStorage.getItem(ACCESS_KEY),
+  refreshToken: () => sessionStorage.getItem(REFRESH_KEY),
+  clear() {
+    sessionStorage.removeItem(ACCESS_KEY);
+    sessionStorage.removeItem(REFRESH_KEY);
+  },
+};
+
+let refreshPromise: Promise<boolean> | null = null;
+
+function tryRefresh(): Promise<boolean> {
+  if (!refreshPromise) {
+    refreshPromise = (async () => {
+      const refreshToken = tokenStorage.refreshToken();
+      if (!refreshToken) return false;
+      try {
+        const response = await fetch(`${getBaseUrl()}/auth/token/refresh`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ refreshToken }),
+        });
+        if (!response.ok) return false;
+        const payload = (await response.json()) as Result<TokenPair>;
+        if (!payload.success || !payload.data) return false;
+        tokenStorage.save(payload.data);
+        return true;
+      } catch {
+        return false;
+      } finally {
+        refreshPromise = null;
+      }
+    })();
+  }
+  return refreshPromise;
+}
+
 export async function apiFetch<TResponse>(path: string, options: ApiFetchOptions = {}): Promise<TResponse> {
+  return doFetch(path, options, true);
+}
+
+async function doFetch<TResponse>(
+  path: string,
+  options: ApiFetchOptions,
+  allowRetry: boolean
+): Promise<TResponse> {
   const baseUrl = getBaseUrl();
   const { method = "GET", params, headers = {}, body, signal, skipAuthRedirect = false } = options;
 
-  // token 注入请求头（hmdp 约定：config.headers['authorization'] = token）
   const mergedHeaders: Record<string, string> = { ...headers };
-  if (typeof window !== "undefined") {
-    const token = sessionStorage.getItem("token");
-    if (token) mergedHeaders["authorization"] = token;
+  const accessToken = tokenStorage.accessToken();
+  if (accessToken) {
+    mergedHeaders["authorization"] = `Bearer ${accessToken}`;
   }
 
   const isFormData = typeof FormData !== "undefined" && body instanceof FormData;
@@ -54,7 +90,6 @@ export async function apiFetch<TResponse>(path: string, options: ApiFetchOptions
     mergedHeaders["Content-Type"] = "application/json";
   }
 
-  // 序列化查询参数：跳过空值（hmdp paramsSerializer 约定）
   let query = "";
   if (params) {
     const pairs: string[] = [];
@@ -82,7 +117,10 @@ export async function apiFetch<TResponse>(path: string, options: ApiFetchOptions
 
   if (!response.ok) {
     if (response.status === 401) {
-      sessionStorage.removeItem("token");
+      if (allowRetry && (await tryRefresh())) {
+        return doFetch(path, options, false);
+      }
+      tokenStorage.clear();
       if (!skipAuthRedirect) {
         window.setTimeout(() => {
           if (window.location.pathname !== "/login") {

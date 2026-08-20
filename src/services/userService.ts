@@ -1,48 +1,51 @@
 import { apiFetch } from "./apiClient";
-import type { LoginForm, UserDTO, User, UserInfo, SignCount } from "@/types";
+import type { LoginForm, UserDTO, User, UserInfo, SignCount, TokenPair, RegisterForm, ResetPasswordForm } from "@/types";
 
-/** 用户相关接口（对应 qupingque_be UserController） */
 export const userService = {
-  /** 发送手机验证码 */
-  sendCode: (phone: string) =>
+  sendCode: (phone: string, scene = "login") =>
     apiFetch<void>("/user/code", {
       method: "POST",
-      params: { phone }
+      params: { phone, scene }
     }),
 
-  /** 登录（验证码或密码），成功返回 token 字符串 */
   login: (form: LoginForm) =>
-    apiFetch<string>("/user/login", {
+    apiFetch<TokenPair>("/auth/login", {
       method: "POST",
       body: form
     }),
 
-  /** 登出 */
-  logout: () =>
-    apiFetch<void>("/user/logout", {
-      method: "POST"
+  register: (form: RegisterForm) =>
+    apiFetch<TokenPair>("/auth/register", {
+      method: "POST",
+      body: form
     }),
 
-  /** 查询当前登录用户 */
-  me: (skipAuthRedirect = false) =>
-    apiFetch<UserDTO>("/user/me", { skipAuthRedirect }),
+  resetPassword: (form: ResetPasswordForm) =>
+    apiFetch<void>("/auth/password/reset", {
+      method: "POST",
+      body: form
+    }),
 
-  /** 查询用户详情（首次查看可能为空） */
+  logout: (refreshToken: string) =>
+    apiFetch<void>("/auth/logout", {
+      method: "POST",
+      body: { refreshToken }
+    }),
+
+  me: (skipAuthRedirect = false) =>
+    apiFetch<UserDTO>("/auth/me", { skipAuthRedirect }),
+
   info: (userId: number) => apiFetch<UserInfo | null>(`/user/info/${userId}`),
 
-  /** 按 id 查询用户（other-info 页约定） */
   byId: (userId: number) => apiFetch<User>(`/user/${userId}`),
 
-  /** 今日签到 */
   sign: () =>
     apiFetch<void>("/user/sign", {
       method: "PUT"
     }),
 
-  /** 签到状态：今日是否已签 + 连续天数（今日未签时为截至昨天的连续天数） */
   signCount: () => apiFetch<SignCount>("/user/sign/count"),
 
-  /** 更新用户详情（与后端约定的扩展接口） */
   updateInfo: (payload: Partial<UserInfo>) =>
     apiFetch<void>("/user-info", {
       method: "PUT",

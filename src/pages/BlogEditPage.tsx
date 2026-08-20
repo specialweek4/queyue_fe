@@ -14,6 +14,9 @@ import styles from "./BlogEditPage.module.css";
 
 type StoredFile = { url: string; objectKey: string };
 
+/** 上次成功保存的载荷快照（脏检查用） */
+type SavedSnapshot = { title: string; images: string; coverUrl: string };
+
 /** 从公开 URL 反推 OSS objectKey（回填编辑时用） */
 const urlToKey = (url: string) => url.replace(/^https?:\/\/[^/]+\//, "");
 
@@ -44,6 +47,8 @@ const BlogEditPage = () => {
   const [confirmedContentKey, setConfirmedContentKey] = useState<string | undefined>(undefined);
   // 上次成功保存时的正文 SHA-256；加载草稿时用已保存正文做种子，避免首存就重传
   const lastContentHashRef = useRef<string | null>(null);
+  // 上次成功保存的载荷快照：标题/图片/封面都没变就不重复写库（ref 不触发渲染）
+  const savedSnapshotRef = useRef<SavedSnapshot | null>(null);
 
   // 登录校验
   useEffect(() => {
@@ -85,6 +90,12 @@ const BlogEditPage = () => {
         }
         // 沿用库里已确认的正文 key（blogs/ 前缀），正文没变时直接复用它
         setConfirmedContentKey(draft.contentObjectKey);
+        // 用已落库的内容建快照：打开草稿不改任何东西就保存时，直接判为"没有改动"
+        savedSnapshotRef.current = {
+          title: draft.title || "",
+          images: draft.images || "",
+          coverUrl: draft.coverUrl || ""
+        };
       } catch (err) {
         toast.error(err instanceof Error ? err.message : "加载草稿失败");
         navigate("/profile");
@@ -167,17 +178,28 @@ const BlogEditPage = () => {
     setCover(null);
   };
 
+  /** 脏检查：标题/图片/封面/正文 hash 与上次成功保存的快照比对，全都没变就不是脏数据 */
+  const isDirty = (contentHash: string) => {
+    const snap = savedSnapshotRef.current;
+    if (!snap) return true; // 新建草稿还没有快照，必然要保存
+    return (
+      title.trim() !== snap.title ||
+      picList.map(p => p.url).join(",") !== snap.images ||
+      (cover?.url ?? "") !== snap.coverUrl ||
+      contentHash !== lastContentHashRef.current
+    );
+  };
+
   /**
    * 确认提交并组装载荷（流派 A，增量版）：
-   * - 正文 hash 去重：保存前对正文算 SHA-256，与上次保存的 hash 相同则跳过直传，
-   *   沿用已确认的正文 key；
+   * - 正文 hash 去重：与上次保存的 hash 相同则跳过直传，沿用已确认的正文 key
+   *   （hash 由调用方在脏检查时算好传入，避免重复计算）；
    * - confirm 增量：只把 unconfirmed/ 临时区新对象传给后端搬入正式区（blogs/），
    *   已是 blogs/ 的正式区引用后端天然幂等，不再重复提交；
    * - 本地状态只替换本次真正搬移的部分，避免临时 URL 留在页面上（生命周期到期会裂图）。
    */
-  const buildPayload = async (id: number) => {
-    // —— 正文：先算 hash 决定要不要重新直传 ——
-    const contentHash = await computeSha256(content);
+  const buildPayload = async (id: number, contentHash: string) => {
+    // —— 正文：按 hash 决定要不要重新直传 ——
     let nextContentKey: string | undefined;
     if (!content.trim()) {
       // 空正文没有正文对象（沿用旧行为：contentObjectKey 传空，由后端落库策略处理）
@@ -219,7 +241,7 @@ const BlogEditPage = () => {
     setPicList(mergedImages);
     setCover(mergedCover);
     setConfirmedContentKey(finalContentKey);
-    lastContentHashRef.current = contentHash;
+    // 注意：lastContentHashRef 由调用方在落库成功后更新（失败时不更新，保证重试仍会上传）
 
     return {
       id,
@@ -232,13 +254,23 @@ const BlogEditPage = () => {
     };
   };
 
-  /** 保存草稿：留在本页继续编辑（未建草稿时先懒创建） */
+  /** 保存草稿：留在本页继续编辑（未建草稿时先懒创建；无改动时跳过写库） */
   const saveDraft = async () => {
     if (saving) return;
+    const contentHash = await computeSha256(content);
+    if (!isDirty(contentHash)) {
+      // 内容与上次保存一致：数据本来就在库里，无需重复写库，直接告知保存成功
+      toast.success("保存成功");
+      return;
+    }
     setSaving(true);
     try {
       const id = await ensureDraft();
-      await blogService.saveDraft(await buildPayload(id));
+      const payload = await buildPayload(id, contentHash);
+      await blogService.saveDraft(payload);
+      // 落库成功才更新快照和 hash（失败时保持旧值，下次保存能重试）
+      savedSnapshotRef.current = { title: payload.title, images: payload.images, coverUrl: payload.coverUrl };
+      lastContentHashRef.current = contentHash;
       toast.success("草稿已保存");
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "保存草稿失败");
@@ -247,7 +279,7 @@ const BlogEditPage = () => {
     }
   };
 
-  /** 发布：先落最新内容，再改状态（未建草稿时先懒创建） */
+  /** 发布：先落最新内容，再改状态（未建草稿时先懒创建；无改动时跳过落库、只改状态） */
   const publish = async () => {
     if (publishing) return;
     if (!title.trim()) {
@@ -257,7 +289,14 @@ const BlogEditPage = () => {
     setPublishing(true);
     try {
       const id = await ensureDraft();
-      await blogService.saveDraft(await buildPayload(id));
+      const contentHash = await computeSha256(content);
+      if (isDirty(contentHash)) {
+        const payload = await buildPayload(id, contentHash);
+        await blogService.saveDraft(payload);
+        savedSnapshotRef.current = { title: payload.title, images: payload.images, coverUrl: payload.coverUrl };
+        lastContentHashRef.current = contentHash;
+      }
+      // 发布本身是状态变更（status/publishTime），即使内容无改动也不能跳过
       await blogService.publish(id);
       toast.success("发布成功");
       navigate("/profile");

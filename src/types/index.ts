@@ -141,3 +141,22 @@ export interface SignCount {
   /** 本月累计已签天数（断签不清零） */
   monthDays: number;
 }
+
+export interface TokenPair {
+  accessToken: string;
+  accessTokenExpiresAt: string;
+  refreshToken: string;
+  refreshTokenExpiresAt: string;
+}
+
+export interface RegisterForm {
+  phone: string;
+  code: string;
+  password: string;
+}
+
+export interface ResetPasswordForm {
+  phone: string;
+  code: string;
+  newPassword: string;
+}
